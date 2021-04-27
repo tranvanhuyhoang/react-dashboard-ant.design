@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Modal, Button } from 'antd';
 
-import React, { Component } from 'react';
 
 export default class ModalAddLesson extends Component {
   render() {
