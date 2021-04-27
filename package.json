@@ -7,6 +7,7 @@
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
     "antd": "^4.15.2",
+    "bootstrap": "^4.6.0",
     "moment": "^2.29.1",
     "node-sass": "^5.0.0",
     "react": "^17.0.2",
@@ -39,5 +40,5 @@
       "last 1 safari version"
     ]
   },
-  "buildDate": ""
+  "buildDate": 1619533946227
 }

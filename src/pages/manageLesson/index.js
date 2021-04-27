@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Table, Tag, Space } from 'antd';
+import { Table, Tag, Space, Button } from 'antd';
+import ModalAddLesson from './addLesson';
 import './style.scss';
 
 export default class ManageLesson extends Component {
@@ -51,6 +52,11 @@ export default class ManageLesson extends Component {
           </Space>
         ),
       },
+      {
+        title: 'Thao tác',
+        key: 'action',
+        render: () => (<span>Xóa, sửa</span>),
+      },
     ];
 
     const data = [
@@ -61,6 +67,7 @@ export default class ManageLesson extends Component {
         words: "hioho",
         grammar: 'New York No. 1 Lake Park',
         exercise: "BT1",
+        action: 'xóa, xóa',
       },
       {
         key: '2',
@@ -69,6 +76,7 @@ export default class ManageLesson extends Component {
         words: "hihi",
         grammar: 'London No. 1 Lake Park',
         exercise: "BT2",
+        action: 'xóa, xóa',
       },
       {
         key: '3',
@@ -77,11 +85,19 @@ export default class ManageLesson extends Component {
         words: "haha",
         grammar: 'Sidney No. 1 Lake Park',
         exercise: "BT3",
+        action: 'xóa, xóa',
       },
     ];
 
     return (
       <div className="wrap-manage-lesson"> 
+
+        <ModalAddLesson/>
+
+        <div className="row m-0 mb-3">
+          <Button type="primary" className="ml-auto">+ Thêm học viên</Button>
+        </div>
+        
         <Table columns={columns} dataSource={data} />
       </div>
     );
