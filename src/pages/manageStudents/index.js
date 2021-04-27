@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Table, Tag, Space } from 'antd';
+import ModalAddStudent from './addStudent';
 import './style.scss';
 
 export default class ManageStudents extends Component {
@@ -88,6 +89,7 @@ export default class ManageStudents extends Component {
 
     return (
       <div className="wrap-manage-student"> 
+        <ModalAddStudent/>
         <Table columns={columns} dataSource={data} />
       </div>
     );
