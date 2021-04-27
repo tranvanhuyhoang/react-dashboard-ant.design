@@ -4,6 +4,28 @@ import ModalAddLesson from './addLesson';
 import './style.scss';
 
 export default class ManageLesson extends Component {
+
+  constructor(props){
+    super(props);
+    this.state={
+      openModalAddLesson: false,
+    }
+  }
+
+  openModalAddLesson = () => {
+    this.setState({
+      openModalAddLesson: true,
+    })
+  }
+
+  cancelModalAddLesson = () => {
+    this.setState({
+      openModalAddLesson: false,
+    })
+  }
+
+  
+
   render() {
     const columns = [
       {
@@ -92,10 +114,13 @@ export default class ManageLesson extends Component {
     return (
       <div className="wrap-manage-lesson"> 
 
-        <ModalAddLesson/>
+        <ModalAddLesson
+          isModalVisible={this.state.openModalAddLesson}
+          handleCancel={this.cancelModalAddLesson}
+        />
 
         <div className="row m-0 mb-3">
-          <Button type="primary" className="ml-auto">+ Thêm học viên</Button>
+          <Button type="primary" className="ml-auto" onClick={this.openModalAddLesson}>+ Thêm học viên</Button>
         </div>
         
         <Table columns={columns} dataSource={data} />
