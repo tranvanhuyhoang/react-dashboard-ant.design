@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import { Table, Tag, Space, Button } from 'antd';
+import { Table, Tag, Space, Button, Tooltip } from 'antd';
 import ModalAddLesson from './addLesson';
+import {
+  RestOutlined,
+  EditOutlined
+} from '@ant-design/icons';
 import './style.scss';
 
 export default class ManageLesson extends Component {
@@ -24,7 +28,21 @@ export default class ManageLesson extends Component {
     })
   }
 
-  
+  displayActionTable = () => {
+    return(
+      <span>
+
+        <Tooltip title="Xóa">
+          <RestOutlined className="icon-custom" />
+        </Tooltip>
+
+        <Tooltip title="Sửa">
+          <EditOutlined className="icon-custom" />
+        </Tooltip>
+         
+      </span>
+    )
+  }
 
   render() {
     const columns = [
@@ -77,7 +95,7 @@ export default class ManageLesson extends Component {
       {
         title: 'Thao tác',
         key: 'action',
-        render: () => (<span>Xóa, sửa</span>),
+        render: () => (this.displayActionTable()),
       },
     ];
 
