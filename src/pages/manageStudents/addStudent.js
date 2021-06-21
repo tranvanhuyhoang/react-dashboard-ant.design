@@ -1,64 +1,162 @@
-import React, { Component } from 'react';
-import { Modal, Button, Upload } from 'antd';
-import ImgCrop from 'antd-img-crop';
+import React, { useState } from 'react';
+import { Modal, Button, Form, Input, Select, DatePicker } from 'antd';
+import moment from 'moment';
 
-export default class ModalAddStudent extends Component {
+import { createStudent } from '../../services/students';
 
-    constructor(props){
-      super(props);
-      this.state = {
-        fileList: {
-          uid: '-1',
-          name: 'image.png',
-          status: 'done',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        }
-      }
-    }
+const { Option } = Select;;
 
-    onChange = ({ fileList: newFileList }) => {
-      this.setState({
-        fileList:newFileList,
-      })
-    };
+export default function ModalAddStudent(props){
+  const [form] = Form.useForm();
+  const [loadingAddStudent, setLoadingAddStudent] = useState(false) 
 
-    onPreview = async file => {
-      let src = file.url;
-      if (!src) {
-        src = await new Promise(resolve => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file.originFileObj);
-          reader.onload = () => resolve(reader.result);
-        });
-      }
-      const image = new Image();
-      image.src = src;
-      const imgWindow = window.open(src);
-      imgWindow.document.write(image.outerHTML);
-    };
-
-  render() {
-    return (
-      <>
-        <Modal title="Thêm bài học" visible={this.props.isModalVisible} onOk={this.props.handleOk} onCancel={this.props.handleCancel}>
-          <div className="wrap-avatar-upload">
-            <ImgCrop rotate>
-              <Upload
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                listType="picture-card"
-                fileList={this.state.fileList}
-                onChange={this.onChange}
-                onPreview={this.onPreview}
-              >
-                {this.state.fileList.length < 5 && '+ Upload'}
-              </Upload>
-            </ImgCrop>
-          </div>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-        </Modal>
-      </>
-    );
+  const successAlert = (content) => {
+    Modal.success({
+      content,
+    });
   }
+
+  const errorAlert = (content) => {
+    Modal.error({
+      content,
+    });
+  }
+
+  const onPreview = async file => {
+    let src = file.url;
+    if (!src) {
+      src = await new Promise(resolve => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj);
+        reader.onload = () => resolve(reader.result);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow.document.write(image.outerHTML);
+  };
+
+  const onFinish = (values) => {   
+    console.log("vo 2 ", values);
+    console.log("loadingAddStudent ", loadingAddStudent);
+    if(loadingAddStudent) return;   
+    actionCreateStudent({
+      name: values.name,
+      phone: values.phone,
+      course: values.course,
+      fee: values.fee,
+      time: moment(values.dateStartStudy).format('DD/MM/YYYY'),
+      class: '',
+      avatar: '',
+    });
+  };
+  
+  const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+  };
+
+  const onClassChange = (value) => {
+    
+  };
+
+  const actionCreateStudent = async(data) => {
+    if(loadingAddStudent) return;
+    setLoadingAddStudent(true);
+    const response = await createStudent(data);
+    if(response.data.status){
+      setLoadingAddStudent(false);
+      successAlert(response.data.message);
+      form.resetFields();
+      props.handleCancel();
+      props.getListStudent();
+    }else{
+      errorAlert(response.data.message);
+      setLoadingAddStudent(false);
+    }
+  }
+
+  const layout = {
+    labelCol: { span: 4 },
+    wrapperCol: { span: 20 },
+  };
+
+  const tailLayout = {
+    wrapperCol: { offset: 4, span:20 },
+  };
+
+  return (
+    <>
+      <Modal 
+      title="Thêm học viên" 
+      visible={props.isModalVisible} 
+      onOk={props.handleOk} 
+      onCancel={props.handleCancel}
+      footer={null}
+      >
+      <Form
+        {...layout}
+        name="basic"
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+      >
+        <Form.Item
+          label="Họ Tên"
+          name="name"
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Phone"
+          name="phone"
+        >
+          <Input />
+        </Form.Item>
+
+        {/* <Form.Item name="class" label="Lớp học">
+          <Select
+            placeholder="Chọn lớp học"
+            onChange={onClassChange}
+            allowClear
+          >
+            <Option value="2T">1</Option>
+            <Option value="6T">2</Option>
+          </Select>
+        </Form.Item> */}
+
+        <Form.Item name="course" label="Khóa học">
+          <Select
+            placeholder="Chọn khóa học"
+            allowClear
+          >
+            <Option value="2M">2T</Option>
+            <Option value="6M">6T</Option>
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          label="Học Phí"
+          name="fee"
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item name="dateStartStudy" label="Ngày học">
+          <DatePicker 
+          format={'DD/MM/YYYY'} 
+          />
+        </Form.Item>
+
+        <Form.Item {...tailLayout}>
+            <Button type="primary" htmlType="submit">
+              + Thêm học viên
+            </Button>
+        </Form.Item>
+
+      </Form>
+      </Modal>
+    </>
+  );
 }
